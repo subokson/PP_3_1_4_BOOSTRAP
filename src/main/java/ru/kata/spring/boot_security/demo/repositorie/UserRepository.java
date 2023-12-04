@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.repositories;
+package ru.kata.spring.boot_security.demo.repositorie;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("Select u from User u left join fetch u.roles where u.email=:email")
     Optional<User> findByEmail(String email);
+
+    boolean existsByUsername(String username);
 }

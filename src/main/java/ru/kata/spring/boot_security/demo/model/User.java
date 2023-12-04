@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
@@ -43,7 +42,7 @@ public class User implements UserDetails {
     private String surname;
 
     @Column(name = "age")
-    private byte age;
+    private Byte age;
 
     @Size(min = 8, max = 255, message = "Длинна пароля от 8 до 255 символов")
     @Column(name = "password")
@@ -59,7 +58,7 @@ public class User implements UserDetails {
 
     }
 
-    public User(String firstname, String lastname, String password, byte age, String email, Set<Role> roles) {
+    public User(String firstname, String lastname, String password, Byte age, String email, Set<Role> roles) {
         this.username = firstname;
         this.surname = lastname;
         this.password = password;
@@ -146,7 +145,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public byte getAge() {
+    public Byte getAge() {
         return age;
     }
 
@@ -172,7 +171,7 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(surname, user.surname) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(surname, user.surname) && Objects.equals(age, user.age) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
     }
 
     @Override

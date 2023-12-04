@@ -1,13 +1,14 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.repositorie.UserRepository;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String name) {
-        return userRepository.findByEmail(name).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByEmail(name).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
@@ -34,25 +35,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
     public void addUser(User user) {
+        if (isUserExists(user.getUsername())) {
+            throw new EntityExistsException("Пользователь с таким именем пользователя уже существует");
+        }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public boolean isUserExists(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     @Transactional
     @Override
     public void updateUser(User user) {
-        user.setUsername(user.getUsername());
-        user.setSurname(user.getSurname());
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setAge(user.getAge());
-        user.setEmail(user.getEmail());
-        user.setRoles(user.getRole());
-        userRepository.save(user);
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        existingUser.setUsername(user.getUsername());
+        existingUser.setSurname(user.getSurname());
+        existingUser.setAge(user.getAge());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setRoles(user.getRole());
+
+        String newPassword = user.getPassword();
+        if (newPassword != null && !newPassword.isEmpty()) {
+            existingUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        }
+
+        userRepository.save(existingUser);
     }
 
     @Override
@@ -60,7 +76,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
         } else {
-            throw new UsernameNotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
     }
 }

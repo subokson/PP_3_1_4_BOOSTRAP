@@ -99,42 +99,52 @@
                                                                 <p>
                                                                     <label for="username">Username</label>
                                                                     <input class="form-control form-control-sm"
-                                                                           type="text"
-                                                                           name="username" th:value="${user.username}"
-                                                                           id="username" placeholder="Username"
-                                                                           required
+                                                                           type="text" name="username"
+                                                                           th:value="${user.username}" id="username"
+                                                                           placeholder="Username" required
+                                                                           pattern=".{2,20}" title="От 2 до 20 символов"
                                                                            autofocus>
+                                                                    <small class="text-danger">От 2 до 20
+                                                                        символов</small>
                                                                 </p>
                                                                 <p>
                                                                     <label for="surname">Surname</label>
                                                                     <input class="form-control form-control-sm"
-                                                                           type="text"
-                                                                           name="surname" th:value="${user.surname}"
-                                                                           id="surname" placeholder="Surname"
-                                                                           required>
+                                                                           type="text" name="surname"
+                                                                           th:value="${user.surname}" id="surname"
+                                                                           placeholder="Surname" required
+                                                                           pattern=".{2,30}"
+                                                                           title="От 2 до 30 символов">
+                                                                    <small class="text-danger">От 2 до 30
+                                                                        символов</small>
                                                                 </p>
+
                                                                 <p>
                                                                     <label for="age">Age</label>
                                                                     <input class="form-control form-control-sm"
-                                                                           type="number"
-                                                                           name="age" th:value="${user.age}"
-                                                                           id="age" placeholder="Age" required>
+                                                                           type="number" name="age"
+                                                                           th:value="${user.age}" id="age"
+                                                                           placeholder="Age" required>
                                                                 </p>
+
                                                                 <p>
                                                                     <label for="email">Email</label>
                                                                     <input class="form-control form-control-sm"
-                                                                           type="email"
-                                                                           name="email" id="email"
-                                                                           th:value="${user.email}"
-                                                                           placeholder="Email" required>
+                                                                           type="email" name="email" id="email"
+                                                                           th:value="${user.email}" placeholder="Email"
+                                                                           required>
                                                                 </p>
+
                                                                 <p>
                                                                     <label for="password">Password</label>
                                                                     <input class="form-control form-control-sm"
-                                                                           type="password"
-                                                                           name="password"
-                                                                           id="password" required>
+                                                                           type="password" name="password" id="password"
+                                                                           required pattern=".{8,255}"
+                                                                           title="От 8 до 255 символов">
+                                                                    <small class="text-danger">От 8 до 255
+                                                                        символов</small>
                                                                 </p>
+
                                                                 <p>
                                                                     <label for="roles">Role</label>
                                                                     <select id="roles" name="roles"
@@ -143,10 +153,10 @@
                                                                         <option th:each="role : ${allRoles}"
                                                                                 th:value="${role.id}"
                                                                                 th:text="${role.name}"
-                                                                                th:selected="${user.role.contains(role)}">
-                                                                        </option>
+                                                                                th:selected="${user.role.contains(role)}"></option>
                                                                     </select>
                                                                 </p>
+
                                                             </form>
                                                         </div>
                                                         <div class="modal-footer">
@@ -272,7 +282,8 @@
                                                name="username" id="newUsername" placeholder="Username" required
                                                autofocus minlength="2" maxlength="20"
                                                th:maxlength="20" th:required="true">
-                                        <small class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('username')}"
+                                               th:errors="*{username}"></small>
                                     </p>
                                     <p>
                                         <label for="newSurname">Surname</label>
@@ -280,7 +291,8 @@
                                                name="surname" id="newSurname" placeholder="Surname"
                                                minlength="2" maxlength="30"
                                                th:maxlength="30">
-                                        <small class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></small>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('surname')}"
+                                               th:errors="*{surname}"></small>
                                     </p>
                                     <p>
                                         <label for="newAge">Age</label>
@@ -295,7 +307,12 @@
                                     <p>
                                         <label for="newPasswd">Password</label>
                                         <input class="form-control form-control-sm" type="password"
-                                               name="password" id="newPasswd" placeholder="Password" required>
+                                               name="password" id="newPasswd" placeholder="Password" required
+                                               autofocus minlength="8" maxlength="2555"
+                                               th:maxlength="20" th:required="true">
+                                        <small class="text-danger" th:if="${#fields.hasErrors('password')}"
+                                               th:errors="*{password}"></small>
+
                                     </p>
                                     <p>
                                         <label for="newRoles">Role</label>
@@ -308,6 +325,7 @@
                                     </p>
                                     <button class="btn btn-success" type="submit">Add new user</button>
                                 </form>
+                                <small class="text-danger" th:if="${duplicateError}" th:text="${duplicateError}"></small>
                             </div>
                         </div>
 
